@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta PIXELPRESS</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080808;
+  --card: #111;
+  --card2: #161616;
+  --border: #222;
+  --border2: #2e2e2e;
+  --accent: #00e5ff;
+  --accent2: #ff2d78;
+  --text: #f0f0f0;
+  --muted: #777;
+  --radius: 14px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  padding: 0 0 60px;
+  background-image:
+    radial-gradient(ellipse at 85% 5%, rgba(0,229,255,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 10% 95%, rgba(255,45,120,0.07) 0%, transparent 55%);
+}
+
+/* ─── NAV ─── */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(8,8,8,0.92);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+.topbar-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.admin-btn {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border2);
+  padding: 6px 14px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.admin-btn:hover { color: var(--text); border-color: #555; }
+
+/* ─── MAIN WRAPPER ─── */
+.page { display: none; padding: 24px 16px; max-width: 520px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* ─── HEADER ─── */
+header {
+  text-align: center;
+  margin-bottom: 28px;
+  animation: fadeDown 0.5s ease both;
+}
+.brand-label {
+  font-size: 11px; letter-spacing: 4px; color: var(--accent);
+  margin-bottom: 6px; text-transform: uppercase; font-weight: 700;
+}
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(38px, 9vw, 58px);
+  line-height: 1;
+  background: linear-gradient(135deg, #fff 35%, var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.subtitle { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.prices { display: flex; gap: 10px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
+.price-tag {
+  border-radius: 30px; padding: 6px 16px;
+  font-size: 13px; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, var(--accent2), #b5005e);
+}
+.price-tag.blue { background: linear-gradient(135deg, var(--accent), #006fa3); color: #000; }
+
+/* ─── PROGRESS ─── */
+.progress-bar { height: 3px; background: var(--border); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 10px; transition: width 0.4s ease; }
+
+/* ─── STEPS ─── */
+.step {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+  animation: fadeUp 0.4s ease both;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.step.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 4px 24px rgba(0,229,255,0.07); }
+.step-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; font-weight: 700; }
+.step h2 { font-family: 'Bebas Neue', sans-serif; font-size: 21px; margin-bottom: 14px; color: #fff; }
+
+/* ─── OPTIONS ─── */
+.options { display: grid; gap: 10px; }
+.options.two { grid-template-columns: 1fr 1fr; }
+.options.three { grid-template-columns: repeat(3, 1fr); }
+
+.opt {
+  border: 1.5px solid var(--border2);
+  border-radius: 10px; padding: 14px 10px;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s; background: var(--card2);
+  user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.opt:active { transform: scale(0.97); }
+.opt.selected { border-color: var(--accent); background: rgba(0,229,255,0.07); color: var(--accent); font-weight: 700; }
+.opt-icon { font-size: 24px; margin-bottom: 6px; display: block; }
+.opt-label { font-size: 13px; font-weight: 500; }
+.opt-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.opt.selected .opt-sub { color: rgba(0,229,255,0.6); }
+
+/* ─── COLORS ─── */
+.color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+.color-opt {
+  border: 2px solid var(--border2); border-radius: 10px;
+  padding: 10px 6px; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: var(--card2); user-select: none;
+}
+.color-opt:active { transform: scale(0.95); }
+.color-opt.selected { border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.15); }
+.dot { width: 32px; height: 32px; border-radius: 50%; margin: 0 auto 6px; border: 2px solid rgba(255,255,255,0.12); }
+.color-name { font-size: 11px; color: var(--muted); }
+.color-opt.selected .color-name { color: #fff; font-weight: 600; }
+
+/* ─── THEMES ─── */
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.theme-opt {
+  border: 1.5px solid var(--border2); border-radius: 10px;
+  padding: 12px; cursor: pointer; transition: all 0.2s;
+  background: var(--card2); display: flex; align-items: center; gap: 8px; user-select: none;
+}
+.theme-opt.selected { border-color: var(--accent); background: rgba(0,229,255,0.07); }
+.theme-emoji { font-size: 20px; flex-shrink: 0; }
+.theme-text { font-size: 12px; font-weight: 500; }
+
+.multi-hint { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+.counter {
+  display: inline-block; background: rgba(0,229,255,0.12); color: var(--accent);
+  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; margin-left: 6px;
+}
+
+textarea {
+  width: 100%; background: var(--card2); border: 1.5px solid var(--border2);
+  border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif;
+  font-size: 14px; padding: 12px 14px; resize: none; outline: none; transition: border-color 0.2s; margin-top: 12px;
+}
+textarea:focus { border-color: var(--accent); }
+textarea::placeholder { color: var(--muted); }
+
+/* ─── SUBMIT BTN ─── */
+.btn-submit {
+  width: 100%; padding: 18px; border: none; border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--accent), #007acc);
+  color: #000; font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; margin-top: 8px;
+}
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.25); }
+.btn-submit:active { transform: scale(0.98); }
+.btn-submit:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ─── SUCCESS ─── */
+.success-wrap { text-align: center; padding: 40px 20px; animation: fadeUp 0.5s ease both; }
+.success-icon { font-size: 60px; margin-bottom: 14px; }
+.success-wrap h2 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 34px;
+  background: linear-gradient(135deg, #fff, var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px;
+}
+.success-wrap p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+.result-summary { margin-top: 20px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: left; }
+.result-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; gap: 12px; }
+.result-row:last-child { border-bottom: none; }
+.result-key { color: var(--muted); flex-shrink: 0; }
+.result-val { font-weight: 600; color: var(--accent); text-align: right; }
+
+/* ─── ADMIN LOGIN ─── */
+.login-wrap { text-align: center; padding: 48px 20px; max-width: 340px; margin: 0 auto; animation: fadeUp 0.4s ease both; }
+.login-wrap h2 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; margin-bottom: 6px; }
+.login-wrap p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.input-group { position: relative; margin-bottom: 14px; }
+.input-group input {
+  width: 100%; background: var(--card); border: 1.5px solid var(--border2);
+  border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif;
+  font-size: 15px; padding: 14px 16px; outline: none; transition: border-color 0.2s;
+  letter-spacing: 4px; text-align: center;
+}
+.input-group input:focus { border-color: var(--accent); }
+.input-group input::placeholder { letter-spacing: 1px; color: var(--muted); }
+.btn-login {
+  width: 100%; padding: 15px; border: none; border-radius: 10px;
+  background: var(--accent); color: #000; font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 2px; cursor: pointer; transition: all 0.2s;
+}
+.btn-login:hover { box-shadow: 0 6px 20px rgba(0,229,255,0.3); }
+.login-error { color: var(--accent2); font-size: 13px; margin-top: 10px; display: none; }
+
+/* ─── DASHBOARD ─── */
+.dashboard-header { text-align: center; padding: 28px 20px 20px; }
+.dashboard-header h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; }
+.dashboard-header p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 16px 16px; max-width: 520px; margin: 0 auto; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; }
+.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--accent); line-height: 1; }
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+.dash-section { max-width: 520px; margin: 0 auto 20px; padding: 0 16px; }
+.dash-section h3 { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; margin-bottom: 12px; color: var(--muted); text-transform: uppercase; }
+
+.bar-item { margin-bottom: 10px; }
+.bar-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+.bar-label span:last-child { color: var(--accent); font-weight: 700; }
+.bar-track { height: 8px; background: var(--border2); border-radius: 10px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 10px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+
+.btn-logout {
+  display: block; margin: 20px auto; padding: 10px 28px;
+  background: none; border: 1px solid var(--border2); border-radius: 30px;
+  color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-logout:hover { border-color: var(--accent2); color: var(--accent2); }
+
+.btn-reset {
+  display: block; margin: 0 auto 10px; padding: 10px 28px;
+  background: none; border: 1px solid #3a0a17; border-radius: 30px;
+  color: #ff2d78; font-family: 'DM Sans', sans-serif; font-size: 12px;
+  cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+}
+.btn-reset:hover { background: rgba(255,45,120,0.07); }
+
+.empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 15px; }
+.empty-state .big { font-size: 48px; margin-bottom: 12px; }
+
+/* ─── ANIMS ─── */
+@keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <span class="topbar-brand">PIXELPRESS</span>
+  <button class="admin-btn" id="adminToggleBtn" onclick="toggleAdmin()">ADMIN ⚡</button>
+</div>
+
+<!-- ══════════ PÁGINA: ENCUESTA ══════════ -->
+<div class="page active" id="page-survey">
+
+  <header>
+    <p class="brand-label">✦ encuesta live ✦</p>
+    <h1>¿Qué quieres<br>que imprimamos?</h1>
+    <p class="subtitle">Tu voto decide qué traemos al próximo live 🔥</p>
+    <div class="prices">
+      <span class="price-tag">👗 4x Q100 — Mujer</span>
+      <span class="price-tag blue">👕 3x Q100 — Hombre</span>
+    </div>
+  </header>
+
+  <div id="survey-form">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+    <!-- PASO 1 -->
+    <div class="step active" id="step1">
+      <p class="step-label">Paso 1 de 4</p>
+      <h2>¿Qué tipo de ropa quieres?</h2>
+      <div class="options two">
+        <div class="opt" onclick="selectOne('tipo','blusa',this)"><span class="opt-icon">👗</span><div class="opt-label">Blusa Mujer</div><div class="opt-sub">4 x Q100</div></div>
+        <div class="opt" onclick="selectOne('tipo','crop',this)"><span class="opt-icon">🩱</span><div class="opt-label">Crop Top</div><div class="opt-sub">4 x Q100</div></div>
+        <div class="opt" onclick="selectOne('tipo','hombre',this)"><span class="opt-icon">👕</span><div class="opt-label">Ropa Hombre</div><div class="opt-sub">3 x Q100</div></div>
+        <div class="opt" onclick="selectOne('tipo','cualquiera',this)"><span class="opt-icon">🤷</span><div class="opt-label">Me da igual</div><div class="opt-sub">Lo que haya</div></div>
+      </div>
+    </div>
+
+    <!-- PASO 2 -->
+    <div class="step" id="step2">
+      <p class="step-label">Paso 2 de 4</p>
+      <h2>¿Cuál es tu talla?</h2>
+      <div class="options three">
+        <div class="opt" onclick="selectOne('talla','S',this)"><span class="opt-icon" style="font-family:'Bebas Neue';font-size:28px;">S</span><div class="opt-label">Small</div></div>
+        <div class="opt" onclick="selectOne('talla','M',this)"><span class="opt-icon" style="font-family:'Bebas Neue';font-size:28px;">M</span><div class="opt-label">Medium</div></div>
+        <div class="opt" onclick="selectOne('talla','L',this)"><span class="opt-icon" style="font-family:'Bebas Neue';font-size:28px;">L</span><div class="opt-label">Large</div></div>
+      </div>
+    </div>
+
+    <!-- PASO 3 -->
+    <div class="step" id="step3">
+      <p class="step-label">Paso 3 de 4</p>
+      <h2>¿Qué color prefieres? <span class="counter" id="colorCounter">0</span></h2>
+      <p class="multi-hint">Puedes elegir más de uno</p>
+      <div class="color-grid" id="colorGrid"></div>
+    </div>
+
+    <!-- PASO 4 -->
+    <div class="step" id="step4">
+      <p class="step-label">Paso 4 de 4</p>
+      <h2>¿Qué temática te gusta? <span class="counter" id="temaCounter">0</span></h2>
+      <p class="multi-hint">Puedes elegir más de una</p>
+      <div class="theme-grid">
+        <div class="theme-opt" onclick="toggleTheme('Stitch',this)"><span class="theme-emoji">💙</span><span class="theme-text">Stitch</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Snoopy',this)"><span class="theme-emoji">🐶</span><span class="theme-text">Snoopy</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Disney/Princesas',this)"><span class="theme-emoji">👸</span><span class="theme-text">Disney / Princesas</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Marvel',this)"><span class="theme-emoji">🦸</span><span class="theme-text">Marvel</span></div>
+        <div class="theme-opt" onclick="toggleTheme('DC Comics',this)"><span class="theme-emoji">🦇</span><span class="theme-text">DC Comics</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Pixar/Cars',this)"><span class="theme-emoji">🏎️</span><span class="theme-text">Pixar / Cars</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Nickelodeon',this)"><span class="theme-emoji">🧽</span><span class="theme-text">Nickelodeon</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Hello Kitty/Sanrio',this)"><span class="theme-emoji">🎀</span><span class="theme-text">Hello Kitty / Sanrio</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Anime/Manga',this)"><span class="theme-emoji">⚡</span><span class="theme-text">Anime / Manga</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Flores/Botánico',this)"><span class="theme-emoji">🌸</span><span class="theme-text">Flores / Botánico</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Frases/Letras',this)"><span class="theme-emoji">✍️</span><span class="theme-text">Frases / Letras</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Abstracto/Arte',this)"><span class="theme-emoji">🎨</span><span class="theme-text">Abstracto / Arte</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Animales/Print',this)"><span class="theme-emoji">🐆</span><span class="theme-text">Animales / Print</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Retro/Vintage',this)"><span class="theme-emoji">📼</span><span class="theme-text">Retro / Vintage</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Deportes',this)"><span class="theme-emoji">⚽</span><span class="theme-text">Deportes / Teams</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Minimalista',this)"><span class="theme-emoji">◽</span><span class="theme-text">Minimalista</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Calaveras/Dark',this)"><span class="theme-emoji">💀</span><span class="theme-text">Calaveras / Dark</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Navidad/Fiestas',this)"><span class="theme-emoji">🎄</span><span class="theme-text">Navidad / Fiestas</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Naturaleza',this)"><span class="theme-emoji">🌊</span><span class="theme-text">Naturaleza</span></div>
+        <div class="theme-opt" onclick="toggleTheme('Pop/Música',this)"><span class="theme-emoji">🎵</span><span class="theme-text">Pop / Música</span></div>
+      </div>
+      <textarea id="nota" rows="2" placeholder="¿Alguna idea especial? (opcional)"></textarea>
+    </div>
+
+    <button class="btn-submit" id="btnSubmit" onclick="submitVote()" disabled>ENVIAR MI VOTO 🔥</button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="survey-success" style="display:none">
+    <div class="success-wrap">
+      <div class="success-icon">🎉</div>
+      <h2>¡Gracias por votar!</h2>
+      <p>Tu opinión nos ayuda a traer lo que<br>querés al próximo live de PIXELPRESS.</p>
+      <div class="result-summary" id="resultSummary"></div>
+      <p style="margin-top:18px;color:var(--muted);font-size:12px;">Seguinos en TikTok para el próximo live 🎥</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PÁGINA: LOGIN ADMIN ══════════ -->
+<div class="page" id="page-login">
+  <div class="login-wrap">
+    <div style="font-size:42px;margin-bottom:12px;">🔐</div>
+    <h2>Panel Admin</h2>
+    <p>Ingresa tu contraseña para ver las estadísticas</p>
+    <div class="input-group">
+      <input type="password" id="pwInput" placeholder="Contraseña" onkeydown="if(event.key==='Enter')checkPw()">
+    </div>
+    <button class="btn-login" onclick="checkPw()">ENTRAR</button>
+    <p class="login-error" id="loginError">❌ Contraseña incorrecta</p>
+  </div>
+</div>
+
+<!-- ══════════ PÁGINA: DASHBOARD ══════════ -->
+<div class="page" id="page-dashboard">
+
+  <div class="dashboard-header">
+    <h2>📊 Estadísticas Live</h2>
+    <p id="dashSubtitle">Cargando votos...</p>
+  </div>
+
+  <!-- KPI cards -->
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num" id="kpi-total">0</div><div class="stat-label">Votos</div></div>
+    <div class="stat-card"><div class="stat-num" id="kpi-mujer">0</div><div class="stat-label">Mujer</div></div>
+    <div class="stat-card"><div class="stat-num" id="kpi-hombre">0</div><div class="stat-label">Hombre</div></div>
+  </div>
+
+  <!-- Tipo de prenda -->
+  <div class="dash-section">
+    <h3>Tipo de prenda</h3>
+    <div id="chart-tipo"></div>
+  </div>
+
+  <!-- Talla -->
+  <div class="dash-section">
+    <h3>Tallas</h3>
+    <div id="chart-talla"></div>
+  </div>
+
+  <!-- Colores -->
+  <div class="dash-section">
+    <h3>Colores preferidos</h3>
+    <div id="chart-color"></div>
+  </div>
+
+  <!-- Temáticas -->
+  <div class="dash-section">
+    <h3>Temáticas DTF</h3>
+    <div id="chart-tema"></div>
+  </div>
+
+  <!-- Notas -->
+  <div class="dash-section" id="notas-section" style="display:none">
+    <h3>Sugerencias / Ideas</h3>
+    <div id="notas-list"></div>
+  </div>
+
+  <button class="btn-reset" onclick="resetVotes()">🗑 BORRAR TODOS LOS VOTOS</button>
+  <button class="btn-logout" onclick="logout()">← Salir del admin</button>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────
+const ADMIN_PASSWORD = 'pixelpress2025';   // ← CAMBIA ESTO
+const STORAGE_KEY    = 'pp_votes_v2';
+
+// ─── COLORES ──────────────────────────────────────────
+const coloresBlusa = [
+  {key:'Rosado', hex:'#f06292'},
+  {key:'Blanco', hex:'#f5f5f5'},
+  {key:'Negro',  hex:'#1a1a1a'},
+  {key:'Rojo',   hex:'#e53935'},
+];
+const coloresCrop = [
+  {key:'Lila/Morado', hex:'#9c27b0'},
+  {key:'Celeste',     hex:'#29b6f6'},
+  {key:'Verde',       hex:'#43a047'},
+  {key:'Beige',       hex:'#d7c5a8'},
+  {key:'Rojo',        hex:'#e53935'},
+  {key:'Negro',       hex:'#1a1a1a'},
+  {key:'Blanco',      hex:'#f5f5f5'},
+  {key:'Rosado',      hex:'#f06292'},
+];
+const coloresHombre = [
+  {key:'Beige',  hex:'#d7c5a8'},
+  {key:'Blanco', hex:'#f5f5f5'},
+  {key:'Negro',  hex:'#1a1a1a'},
+  {key:'Rojo',   hex:'#e53935'},
+];
+
+// ─── STATE ────────────────────────────────────────────
+let selections = { tipo:null, talla:null, colores:[], temas:[] };
+
+// ─── STORAGE ──────────────────────────────────────────
+function loadVotes()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } }
+function saveVote(v)  { const arr = loadVotes(); arr.push(v); localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+function clearVotes() { localStorage.removeItem(STORAGE_KEY); }
+
+// ─── NAV ──────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+}
+
+function toggleAdmin() {
+  const cur = document.querySelector('.page.active').id;
+  if (cur === 'page-survey' || cur === 'page-login') {
+    if (cur !== 'page-login') showPage('login');
+    else showPage('survey');
+  } else {
+    logout();
+  }
+}
+
+function logout() { showPage('survey'); document.getElementById('adminToggleBtn').textContent = 'ADMIN ⚡'; }
+
+// ─── LOGIN ────────────────────────────────────────────
+function checkPw() {
+  const v = document.getElementById('pwInput').value;
+  if (v === ADMIN_PASSWORD) {
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('adminToggleBtn').textContent = '← SALIR';
+    showPage('dashboard');
+    renderDashboard();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+
+// ─── ENCUESTA ─────────────────────────────────────────
+function selectOne(key, value, el) {
+  selections[key] = value;
+  el.closest('.step').querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  if (key === 'tipo') renderColors(value);
+  updateProgress();
+}
+
+function renderColors(tipo) {
+  const list = tipo === 'hombre' ? coloresHombre : tipo === 'crop' ? coloresCrop : coloresBlusa;
+  selections.colores = [];
+  document.getElementById('colorCounter').textContent = '0';
+  document.getElementById('colorGrid').innerHTML = list.map(c => `
+    <div class="color-opt" onclick="toggleColor('${c.key}',this)">
+      <div class="dot" style="background:${c.hex}"></div>
+      <div class="color-name">${c.key}</div>
+    </div>`).join('');
+}
+
+function toggleColor(key, el) {
+  const i = selections.colores.indexOf(key);
+  i === -1 ? selections.colores.push(key) : selections.colores.splice(i, 1);
+  el.classList.toggle('selected');
+  document.getElementById('colorCounter').textContent = selections.colores.length;
+  updateProgress();
+}
+
+function toggleTheme(key, el) {
+  const i = selections.temas.indexOf(key);
+  i === -1 ? selections.temas.push(key) : selections.temas.splice(i, 1);
+  el.classList.toggle('selected');
+  document.getElementById('temaCounter').textContent = selections.temas.length;
+  updateProgress();
+}
+
+function updateProgress() {
+  let d = 0;
+  if (selections.tipo)          d++;
+  if (selections.talla)         d++;
+  if (selections.colores.length) d++;
+  if (selections.temas.length)   d++;
+  document.getElementById('progressFill').style.width = (d/4*100) + '%';
+  document.getElementById('btnSubmit').disabled = d < 2;
+}
+
+function submitVote() {
+  const vote = {
+    tipo:    selections.tipo,
+    talla:   selections.talla,
+    colores: [...selections.colores],
+    temas:   [...selections.temas],
+    nota:    document.getElementById('nota').value.trim(),
+    ts:      Date.now()
+  };
+  saveVote(vote);
+
+  // show summary
+  const tipoLabel = {blusa:'👗 Blusa Mujer', crop:'🩱 Crop Top', hombre:'👕 Ropa Hombre', cualquiera:'🤷 Me da igual'};
+  const rows = [
+    {k:'Prenda', v: tipoLabel[vote.tipo] || '—'},
+    {k:'Talla',  v: vote.talla || '—'},
+    {k:'Colores',v: vote.colores.join(', ') || '—'},
+    {k:'Temáticas', v: vote.temas.join(', ') || '—'},
+  ];
+  if (vote.nota) rows.push({k:'Nota', v: vote.nota});
+  document.getElementById('resultSummary').innerHTML = rows.map(r =>
+    `<div class="result-row"><span class="result-key">${r.k}</span><span class="result-val">${r.v}</span></div>`
+  ).join('');
+
+  document.getElementById('survey-form').style.display = 'none';
+  document.getElementById('survey-success').style.display = 'block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ─── DASHBOARD ────────────────────────────────────────
+function count(votes, keyFn) {
+  const m = {};
+  votes.forEach(v => {
+    const vals = keyFn(v);
+    (Array.isArray(vals) ? vals : [vals]).forEach(x => { if (x) m[x] = (m[x]||0) + 1; });
+  });
+  return m;
+}
+
+function renderBars(containerId, data, total) {
+  const sorted = Object.entries(data).sort((a,b) => b[1]-a[1]);
+  if (!sorted.length) { document.getElementById(containerId).innerHTML = '<p style="color:var(--muted);font-size:13px;">Sin datos aún</p>'; return; }
+  const max = sorted[0][1];
+  document.getElementById(containerId).innerHTML = sorted.map(([label, n]) => {
+    const pct = max > 0 ? Math.round(n/max*100) : 0;
+    const pctTotal = total > 0 ? Math.round(n/total*100) : 0;
+    return `<div class="bar-item">
+      <div class="bar-label"><span>${label}</span><span>${n} voto${n!==1?'s':''} · ${pctTotal}%</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderDashboard() {
+  const votes = loadVotes();
+  const total = votes.length;
+
+  document.getElementById('dashSubtitle').textContent =
+    total === 0 ? 'Aún no hay votos' : `${total} voto${total!==1?'s':''} registrado${total!==1?'s':''}`;
+
+  const mujer  = votes.filter(v => v.tipo === 'blusa' || v.tipo === 'crop').length;
+  const hombre = votes.filter(v => v.tipo === 'hombre').length;
+  document.getElementById('kpi-total').textContent  = total;
+  document.getElementById('kpi-mujer').textContent  = mujer;
+  document.getElementById('kpi-hombre').textContent = hombre;
+
+  const tipoLabel = {blusa:'Blusa Mujer', crop:'Crop Top', hombre:'Ropa Hombre', cualquiera:'Me da igual'};
+  const tipoData = {};
+  votes.forEach(v => { if (v.tipo) { const l = tipoLabel[v.tipo]||v.tipo; tipoData[l] = (tipoData[l]||0)+1; } });
+
+  renderBars('chart-tipo',  tipoData,                           total);
+  renderBars('chart-talla', count(votes, v => v.talla),         total);
+  renderBars('chart-color', count(votes, v => v.colores || []), total);
+  renderBars('chart-tema',  count(votes, v => v.temas  || []),  total);
+
+  // notas
+  const notas = votes.filter(v => v.nota && v.nota.trim());
+  const sec = document.getElementById('notas-section');
+  if (notas.length) {
+    sec.style.display = 'block';
+    document.getElementById('notas-list').innerHTML = notas.map(v =>
+      `<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;font-size:13px;color:var(--text);">${v.nota}</div>`
+    ).join('');
+  } else {
+    sec.style.display = 'none';
+  }
+}
+
+function resetVotes() {
+  if (!confirm('¿Seguro que querés borrar todos los votos? Esta acción no se puede deshacer.')) return;
+  clearVotes();
+  renderDashboard();
+}
+
+// ─── INIT ─────────────────────────────────────────────
+renderColors('blusa');
+updateProgress();
+</script>
+</body>
+</html>
